@@ -1,4 +1,4 @@
-# Projeto de Honeypot com Cowrie
+# Honeypot com Cowrie
 
 ## Descrição
 Este projeto configura um honeypot utilizando Cowrie, uma ferramenta de código aberto para simular serviços SSH e Telnet vulneráveis. O objetivo é capturar informações sobre atividades maliciosas, como tentativas de login não autorizadas, comandos executados e arquivos transferidos, ajudando na análise de ataques e comportamento de invasores.
