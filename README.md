@@ -1,79 +1,113 @@
-# Projeto: Honeypot com Cowrie
+# Projeto de Honeypot com Cowrie
 
-## Arquitetura do Projeto
+## Descrição
+Este projeto configura um honeypot utilizando Cowrie, uma ferramenta de código aberto para simular serviços SSH e Telnet vulneráveis. O objetivo é capturar informações sobre atividades maliciosas, como tentativas de login não autorizadas, comandos executados e arquivos transferidos, ajudando na análise de ataques e comportamento de invasores.
 
-O fluxo do projeto pode ser descrito da seguinte forma:
+---
 
-### 1. Atacantes:
+## Funcionalidades
+- Simulação de servidores SSH e Telnet.
+- Registro detalhado de tentativas de login.
+- Captura de comandos executados por atacantes.
+- Coleta de arquivos transferidos via SCP ou wget.
+- Armazenamento dos dados capturados em um banco de dados ou arquivos de log.
 
-- Representam agentes maliciosos que tentam explorar vulnerabilidades em sistemas, conectando-se a serviços simulados como SSH e Telnet.
+---
 
-- Esses atacantes interagem diretamente com o honeypot, fornecendo dados valiosos sobre comportamentos e estratégias de ataque.
+## Tecnologias Usadas
+- **Cowrie**: Honeypot SSH/Telnet.
+- **Ubuntu/Debian**: Sistema operacional base.
+- **ELK Stack (opcional)**: Para visualização de logs.
+- **iptables**: Configuração de redirecionamento de portas.
 
-### 2. Honeypot (Cowrie):
+---
 
-- Uma ferramenta especializada em simular serviços SSH/Telnet para capturar atividades maliciosas.
+## Como Usar
 
-- Registra as seguintes informações:
+### Pré-requisitos
+Certifique-se de ter:
+- Sistema operacional Linux.
+- Python 3 e pip instalados.
+- Acesso root para configurar redirecionamento de portas.
 
-    - Comandos executados pelos atacantes.
+### Instalação
 
-    - Credenciais utilizadas em tentativas de login.
+1. Atualize o sistema:
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   ```
 
-    - Transferências de arquivos maliciosos realizadas.
+2. Instale dependências:
+   ```bash
+   sudo apt install git python3 python3-venv python3-pip -y
+   ```
 
-- Proporciona um ambiente controlado para estudo de táticas utilizadas por invasores.
+3. Clone o repositório do Cowrie:
+   ```bash
+   git clone https://github.com/cowrie/cowrie.git
+   cd cowrie
+   ```
 
-### 3. Logs:
+4. Configure o ambiente virtual Python:
+   ```bash
+   python3 -m venv cowrie-env
+   source cowrie-env/bin/activate
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
 
-- Todos os dados capturados pelo honeypot são registrados em arquivos de log detalhados.
+5. Configure o Cowrie:
+   - Copie o arquivo de configuração de exemplo:
+     ```bash
+     cp cowrie.cfg.dist cowrie.cfg
+     ```
+   - Edite o arquivo `cowrie.cfg` para ajustar parâmetros, como portas simuladas e modos de operação.
 
-- Os logs incluem informações como:
+6. Configure o redirecionamento de portas:
+   ```bash
+   sudo iptables -t nat -A PREROUTING -p tcp --dport 22 -j REDIRECT --to-port 2222
+   sudo iptables -t nat -A PREROUTING -p tcp --dport 23 -j REDIRECT --to-port 2223
+   ```
 
-    - IPs de origem das conexões.
+7. Inicie o Cowrie:
+   ```bash
+   ./bin/cowrie start
+   ```
 
-    - Comandos digitados.
+---
 
-    - Horários das atividades.
+## Exemplo de Uso
+- Um atacante tenta acessar o honeypot via SSH.
+- Cowrie registra a tentativa de login, comandos executados e arquivos transferidos.
+- Os logs são armazenados em `log/cowrie.log` para análise.
 
-- Esses registros podem ser armazenados localmente ou enviados para serviços de arquivamento seguro, como AWS S3 ou servidores externos.
+---
 
-### 4. Análise de Dados:
+## Estrutura do Projeto
+```plaintext
+honeypot-cowrie/
+├── cowrie/             # Arquivos e configuração do Cowrie
+├── logs/               # Logs gerados pelo honeypot
+├── scripts/            # Scripts para automatização (opcional)
+├── docs/               # Documentação adicional
+└── README.md           # Este arquivo
+```
 
-- Os logs são analisados para identificar padrões de comportamento e classificar os tipos de ataques.
+---
 
-- Ferramentas como Kibana ou Splunk podem ser utilizadas para:
+## Aprendizados
+- Configuração e operação de um honeypot com Cowrie.
+- Captura e análise de atividades maliciosas.
+- Uso de redirecionamento de portas para simular serviços vulneráveis.
 
-    - Criar dashboards interativos para monitoramento em tempo real.
+---
 
-    - Gerar relatórios com insights sobre os ataques registrados.
+## Próximos Passos
+- Integração com ELK Stack para visualização avançada de logs.
+- Automação da configuração com Ansible ou Terraform.
+- Implementação de alertas em tempo real para atividades suspeitas.
 
-- Conexão com bancos de dados de inteligência de ameaças permite identificar IPs e métodos associados a agentes maliciosos conhecidos.
+---
 
-## Objetivo do Projeto
-
-Criar um ambiente seguro para capturar, estudar e compreender o comportamento de atacantes, utilizando o Cowrie como honeypot e integrando ferramentas de análise para monitoramento e registro de dados.
-
-## Possíveis Expansões
-
-    1. Implementar alertas em tempo real para detecção de atividades suspeitas.
-
-    2. Automatizar a classificação de ameaças com scripts Python.
-
-    3. Expandir a infraestrutura para suportar múltiplos honeypots distribuídos em diferentes regiões.
-
-## Habilidades Demonstradas
-
-- Configuração e personalização de honeypots.
-
-- Integração de ferramentas de monitoramento (Kibana/Splunk).
-
-- Análise de logs e identificação de padrões de comportamento.
-
-- Armazenamento seguro e organização de registros para estudos futuros.
-
-## Como Executar o Projeto
-
-Para mais detalhes sobre como configurar e executar este honeypot, consulte os arquivos de documentação abaixo:
-
-
+## Contribuições
+Contribuições são bem-vindas! Para sugerir melhorias ou relatar problemas, abra uma issue ou envie um pull request.
